@@ -1,8 +1,8 @@
 """
-Metrics for evaluating model performance.
+Métricas para evaluar el rendimiento del modelo.
 
-This module provides functions to compute various performance metrics
-for classification and regression tasks.
+Este módulo proporciona funciones para calcular varias métricas de rendimiento
+para tareas de clasificación y regresión.
 """
 
 import numpy as np
@@ -10,24 +10,24 @@ import numpy as np
 
 def accuracy_score(y_true, y_pred):
     """
-    Accuracy classification score.
+    Puntaje de precisión de clasificación.
 
     Parameters
     ----------
     y_true : array-like of shape (n_samples,)
-        Ground truth (correct) labels
+        Etiquetas de verdad (correctas)
     y_pred : array-like of shape (n_samples,)
-        Predicted labels
+        Etiquetas predichas
 
     Returns
     -------
     score : float
-        Accuracy score (fraction of correctly classified samples)
+        Puntaje de precisión (fracción de muestras clasificadas correctamente)
 
     Raises
     ------
     ValueError
-        If y_true and y_pred have different lengths
+        Si y_true e y_pred tienen longitudes diferentes
     """
     y_true = np.asarray(y_true)
     y_pred = np.asarray(y_pred)

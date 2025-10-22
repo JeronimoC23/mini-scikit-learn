@@ -1,8 +1,8 @@
 """
-Base classes and utilities for mini-scikit-learn.
+Clases base y utilidades para mini-scikit-learn.
 
-This module provides the foundational classes and validation functions
-that other components inherit from and use.
+Este módulo proporciona las clases fundamentales y funciones de validación
+que otros componentes heredan y utilizan.
 """
 
 import numpy as np
@@ -11,33 +11,33 @@ from abc import ABC, abstractmethod
 
 def check_array(X, *, ensure_2d=True):
     """
-    Input validation on an array, list, sparse matrix or similar.
+    Validación de entrada para un array, lista, matriz dispersa o similar.
 
     Parameters
     ----------
     X : array-like
-        Input data to validate
+        Datos de entrada a validar
     ensure_2d : bool, default=True
-        Whether to ensure the array is 2D
+        Si se debe asegurar que el array sea 2D
 
     Returns
     -------
     X_converted : ndarray
-        The converted and validated array
+        El array convertido y validado
 
     Raises
     ------
     ValueError
-        If the array contains NaN or infinite values, or if ensure_2d=True
-        and the array is not 2D
+        Si el array contiene valores NaN o infinitos, o si ensure_2d=True
+        y el array no es 2D
     """
     X = np.asarray(X)
 
-    # Check for NaN and infinite values
+    # Verificar valores NaN e infinitos
     if not np.isfinite(X).all():
         raise ValueError("Input contains NaN or infinite values")
 
-    # Check dimensionality
+    # Verificar dimensionalidad
     if ensure_2d and X.ndim != 2:
         raise ValueError(f"Expected 2D array, got {X.ndim}D array instead")
 
@@ -46,36 +46,36 @@ def check_array(X, *, ensure_2d=True):
 
 def check_X_y(X, y):
     """
-    Input validation for X and y arrays.
+    Validación de entrada para arrays X e y.
 
     Parameters
     ----------
     X : array-like
-        Feature matrix
+        Matriz de características
     y : array-like
-        Target vector
+        Vector objetivo
 
     Returns
     -------
     X_converted : ndarray
-        The converted and validated feature matrix
+        La matriz de características convertida y validada
     y_converted : ndarray
-        The converted and validated target vector
+        El vector objetivo convertido y validado
 
     Raises
     ------
     ValueError
-        If X and y have inconsistent numbers of samples, or if they
-        contain NaN or infinite values
+        Si X e y tienen números inconsistentes de muestras, o si
+        contienen valores NaN o infinitos
     """
     X = check_array(X, ensure_2d=True)
     y = np.asarray(y)
 
-    # Check for NaN and infinite values in y
+    # Verificar valores NaN e infinitos en y
     if not np.isfinite(y).all():
         raise ValueError("Target array contains NaN or infinite values")
 
-    # Check consistent number of samples
+    # Verificar número consistente de muestras
     if len(y) != X.shape[0]:
         raise ValueError(
             f"X and y have inconsistent numbers of samples: "
@@ -87,17 +87,17 @@ def check_X_y(X, y):
 
 def _rng(random_state):
     """
-    Create a numpy random number generator.
+    Crear un generador de números aleatorios de numpy.
 
     Parameters
     ----------
     random_state : int, RandomState instance or None, default=None
-        Controls the randomness
+        Controla la aleatoriedad
 
     Returns
     -------
     rng : numpy.random.Generator
-        Random number generator
+        Generador de números aleatorios
     """
     if isinstance(random_state, np.random.Generator):
         return random_state
@@ -106,79 +106,79 @@ def _rng(random_state):
 
 class BaseEstimator:
     """
-    Base class for all estimators in mini-scikit-learn.
+    Clase base para todos los estimadores en mini-scikit-learn.
 
-    This is a marker class that provides a common interface for all estimators.
+    Esta es una clase marcadora que proporciona una interfaz común para todos los estimadores.
     """
     pass
 
 
 class Estimator(BaseEstimator, ABC):
     """
-    Abstract base class for estimators.
+    Clase base abstracta para estimadores.
 
-    All estimators should implement fit and predict methods.
+    Todos los estimadores deben implementar los métodos fit y predict.
     """
 
     @abstractmethod
     def fit(self, X, y):
         """
-        Fit the estimator to training data.
+        Ajustar el estimador a los datos de entrenamiento.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            Training data
+            Datos de entrenamiento
         y : array-like of shape (n_samples,)
-            Target values
+            Valores objetivo
 
         Returns
         -------
         self : object
-            Returns the instance itself
+            Retorna la instancia misma
         """
         pass
 
     @abstractmethod
     def predict(self, X):
         """
-        Make predictions on new data.
+        Hacer predicciones sobre datos nuevos.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            Input data
+            Datos de entrada
 
         Returns
         -------
         y_pred : ndarray of shape (n_samples,)
-            Predicted values
+            Valores predichos
         """
         pass
 
 
 class ClassifierMixin:
     """
-    Mixin class for classifiers.
+    Clase mixin para clasificadores.
 
-    Provides a default implementation of the score method using accuracy.
+    Proporciona una implementación por defecto del método score usando precisión.
     """
 
     def score(self, X, y):
         """
-        Return the mean accuracy on the given test data and labels.
+        Retornar la precisión promedio en los datos de prueba y etiquetas dados.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            Test samples
+            Muestras de prueba
         y : array-like of shape (n_samples,)
-            True labels for X
+            Etiquetas verdaderas para X
 
         Returns
         -------
         score : float
-            Mean accuracy
+            Precisión promedio
         """
         from .metrics import accuracy_score
         y_pred = self.predict(X)
@@ -187,25 +187,25 @@ class ClassifierMixin:
 
 class TransformerMixin:
     """
-    Mixin class for transformers.
+    Clase mixin para transformadores.
 
-    Provides a default implementation of fit_transform.
+    Proporciona una implementación por defecto de fit_transform.
     """
 
     def fit_transform(self, X, y=None):
         """
-        Fit to data, then transform it.
+        Ajustar a los datos, luego transformarlos.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            Input data
+            Datos de entrada
         y : array-like, default=None
-            Target values (ignored)
+            Valores objetivo (ignorados)
 
         Returns
         -------
         X_transformed : ndarray
-            Transformed data
+            Datos transformados
         """
         return self.fit(X, y).transform(X)

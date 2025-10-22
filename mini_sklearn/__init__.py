@@ -9,10 +9,12 @@ __version__ = "0.1.0"
 
 from .base import BaseEstimator, ClassifierMixin, TransformerMixin
 from .metrics import accuracy_score
+from .pipeline import Pipeline
 
 __all__ = [
     'BaseEstimator',
     'ClassifierMixin',
     'TransformerMixin',
     'accuracy_score',
+    'Pipeline',
 ]

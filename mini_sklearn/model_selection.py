@@ -1,8 +1,8 @@
 """
-Data splitting utilities for train/validation/test splits.
+Utilidades de división de datos para splits de entrenamiento/validación/prueba.
 
-This module provides functions to split datasets while optionally preserving
-class distributions (stratification).
+Este módulo proporciona funciones para dividir conjuntos de datos preservando
+opcionalmente las distribuciones de clases (estratificación).
 """
 
 import numpy as np
@@ -11,40 +11,40 @@ from .base import check_X_y, _rng
 
 def train_test_split(X, y, *, test_size=0.2, random_state=None, stratify=None):
     """
-    Split arrays into random train and test subsets.
+    Dividir arrays en subconjuntos aleatorios de entrenamiento y prueba.
 
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        Training data
+        Datos de entrenamiento
     y : array-like of shape (n_samples,)
-        Target values
+        Valores objetivo
     test_size : float, default=0.2
-        Proportion of the dataset to include in the test split
+        Proporción del conjunto de datos a incluir en el split de prueba
     random_state : int, RandomState instance or None, default=None
-        Controls the shuffling applied to the data before applying the split
+        Controla la mezcla aplicada a los datos antes de aplicar el split
     stratify : array-like or None, default=None
-        If not None, data is split in a stratified fashion, using this as
-        the class labels
+        Si no es None, los datos se dividen de manera estratificada, usando esto
+        como las etiquetas de clase
 
     Returns
     -------
     X_train : ndarray
-        Training data
+        Datos de entrenamiento
     X_test : ndarray
-        Test data
+        Datos de prueba
     y_train : ndarray
-        Training targets
+        Objetivos de entrenamiento
     y_test : ndarray
-        Test targets
+        Objetivos de prueba
 
     Raises
     ------
     ValueError
-        If test_size is not between 0 and 1, or if stratification fails
-        due to insufficient samples per class
+        Si test_size no está entre 0 y 1, o si la estratificación falla
+        debido a muestras insuficientes por clase
     """
-    # Validate inputs
+    # Validar entradas
     X, y = check_X_y(X, y)
 
     if not 0 < test_size < 1:
@@ -63,30 +63,30 @@ def train_test_split(X, y, *, test_size=0.2, random_state=None, stratify=None):
     rng = _rng(random_state)
 
     if stratify is None:
-        # Simple random split
+        # División aleatoria simple
         indices = np.arange(n_samples)
         rng.shuffle(indices)
 
         test_indices = indices[:n_test]
         train_indices = indices[n_test:]
     else:
-        # Stratified split
+        # División estratificada
         stratify = np.asarray(stratify)
         if len(stratify) != n_samples:
             raise ValueError(
                 f"stratify has {len(stratify)} samples but X has {n_samples}"
             )
 
-        # Get unique classes and their counts
+        # Obtener clases únicas y sus conteos
         classes, y_indices = np.unique(stratify, return_inverse=True)
         n_classes = len(classes)
 
-        # Calculate samples per class for test set
+        # Calcular muestras por clase para el conjunto de prueba
         class_counts = np.bincount(y_indices)
         test_counts = np.round(class_counts * test_size).astype(int)
 
-        # Ensure we have at least 1 sample per class in test if class exists
-        # and at least 1 sample per class in train
+        # Asegurar que tengamos al menos 1 muestra por clase en prueba si la clase existe
+        # y al menos 1 muestra por clase en entrenamiento
         for i, (count, test_count) in enumerate(zip(class_counts, test_counts)):
             if count == 1 and test_size > 0:
                 raise ValueError(
@@ -99,9 +99,9 @@ def train_test_split(X, y, *, test_size=0.2, random_state=None, stratify=None):
             if test_count == count and count > 1:
                 test_counts[i] = count - 1
 
-        # Check if we still have valid splits
+        # Verificar si todavía tenemos splits válidos
         if test_counts.sum() > n_test:
-            # Reduce test counts proportionally
+            # Reducir conteos de prueba proporcionalmente
             excess = test_counts.sum() - n_test
             for i in range(len(test_counts)):
                 if test_counts[i] > 1 and excess > 0:
@@ -109,26 +109,26 @@ def train_test_split(X, y, *, test_size=0.2, random_state=None, stratify=None):
                     test_counts[i] -= reduction
                     excess -= reduction
 
-        # Collect indices for each class
+        # Recolectar índices para cada clase
         train_indices = []
         test_indices = []
 
         for class_idx, (class_label, test_count) in enumerate(zip(classes, test_counts)):
-            # Get all indices for this class
+            # Obtener todos los índices para esta clase
             class_mask = y_indices == class_idx
             class_indices = np.where(class_mask)[0]
 
-            # Shuffle indices for this class
+            # Mezclar índices para esta clase
             rng.shuffle(class_indices)
 
-            # Split into train/test
+            # Dividir en entrenamiento/prueba
             test_indices.extend(class_indices[:test_count])
             train_indices.extend(class_indices[test_count:])
 
         train_indices = np.array(train_indices)
         test_indices = np.array(test_indices)
 
-        # Final shuffle to mix classes
+        # Mezcla final para combinar clases
         rng.shuffle(train_indices)
         rng.shuffle(test_indices)
 
