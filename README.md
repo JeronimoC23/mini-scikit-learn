@@ -1,6 +1,7 @@
 # Mini Scikit-Learn
 
-Una implementación simplificada de la funcionalidad central de scikit-learn con fines educativos. Este proyecto replica componentes clave de scikit-learn para demostrar conceptos de aprendizaje automático y prácticas de POO en Python.
+Una implementación simplificada de la funcionalidad central de scikit-learn con fines educativos. Este proyecto replica componentes clave de scikit-learn para demostrar conceptos de aprendizaje automático y prácticas de POO en Python. 
+[Tutorial base que usado de referencia](https://colab.research.google.com/drive/1e369NLzd2YlEG4c_4fyCNqnebIG-rGni#scrollTo=fhYpws-kWuj4&uniqifier=1)
 
 ## 🎯 Objetivos del Proyecto
 
